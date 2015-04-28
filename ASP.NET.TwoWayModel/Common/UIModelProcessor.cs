@@ -262,22 +262,32 @@ namespace ASP.NET.TwoWayModel.Common
             return converted;
         }
 
+        private bool IsNullable(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
         private Object GetConvertedValue(Object value, Type destType)
         {
             if (ReferenceEquals(value, null))
             {
-                if (destType.IsValueType)
+                if (!destType.IsValueType)
                 {
-                    if (_allowDefaultIfNull)
-                    {
-                        return Activator.CreateInstance(destType);
-                    }
-
-                    var nullValueErrorText = String.Format("Null is not assignable to type [{0}]", destType);
-                    throw new Exception(nullValueErrorText);
+                    return null;
                 }
 
-                return null;
+                if (IsNullable(destType))
+                {
+                    return null;
+                }
+
+                if (_allowDefaultIfNull)
+                {
+                    return Activator.CreateInstance(destType);
+                }
+
+                var nullValueErrorText = String.Format("Null is not assignable to type [{0}]", destType);
+                throw new Exception(nullValueErrorText);
             }
 
             var converter = TypeDescriptor.GetConverter(destType);
