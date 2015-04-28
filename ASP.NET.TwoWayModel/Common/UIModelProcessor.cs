@@ -262,11 +262,6 @@ namespace ASP.NET.TwoWayModel.Common
             return converted;
         }
 
-        private bool IsNullable(Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
-
         private Object GetConvertedValue(Object value, Type destType)
         {
             if (ReferenceEquals(value, null))
@@ -353,6 +348,11 @@ namespace ASP.NET.TwoWayModel.Common
             }
 
             throw new Exception();
+        }
+
+        private bool IsNullable(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }
