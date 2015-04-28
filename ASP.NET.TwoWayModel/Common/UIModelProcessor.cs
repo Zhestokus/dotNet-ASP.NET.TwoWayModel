@@ -12,8 +12,8 @@ namespace ASP.NET.TwoWayModel.Common
 {
     public class UIModelProcessor
     {
-        private readonly String _propertyAttributeKey = "Property";
         private readonly bool _allowDefaultIfNull = true;
+        private readonly String _propertyAttributeKey = "Property";
 
         private readonly IDictionary<String, IList<Control>> _propertyControls;
         private readonly Control _containerControl;
