@@ -73,5 +73,6 @@ public class SubscriberModel
   public LocationModel Location { get; set; }
 }
 ```
+NOTE: controls or pages which represents Model should be inherited from UserControlModelBase class and/or PageModelBase class respectively
 
 for more information see ASP.NET.TwoWayMode.Test application
