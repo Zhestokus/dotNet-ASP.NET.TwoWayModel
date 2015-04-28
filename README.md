@@ -26,7 +26,14 @@ LocationControl
 <asp:TextBox runat="server" ID="tbxAltitude" Property="LocationModel.Altitude" />
 <asp:TextBox runat="server" ID="tbxSpeed" Property="LocationModel.Speed" />
 ```
-
+```csharp
+public partial class VehicleControl : UserControlModelBase
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+}
+```
 VehicleControl
 ```asp
 <%@ Register Src="~/LocationControl.ascx" TagPrefix="local" TagName="LocationControl" %>
@@ -49,6 +56,14 @@ VehicleControl
 <div>
   <local:LocationControl runat="server" ID="locationControl" Property="VehicleModel.Location"/>
 </div>
+```
+```csharp
+public partial class LocationControl : UserControlModelBase
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+}
 ```
 
 Model class
