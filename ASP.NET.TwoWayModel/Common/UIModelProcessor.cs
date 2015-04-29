@@ -225,16 +225,29 @@ namespace ASP.NET.TwoWayModel.Common
                 container.Text = Convert.ToString(value);
             }
 
-            if (control is RadioButtonList)
+            if (control is ListControl)
             {
-                var container = (RadioButtonList)control;
-                container.SelectedValue = Convert.ToString(value);
-            }
+                var container = (ListControl)control;
 
-            if (control is DropDownList)
-            {
-                var container = (DropDownList)control;
-                container.SelectedValue = Convert.ToString(value);
+                var collection = value as IEnumerable<String>;
+                if (collection != null)
+                {
+                    var @set = collection as ISet<String>;
+                    @set = (@set ?? new HashSet<String>(collection));
+
+                    foreach (ListItem item in container.Items)
+                    {
+                        item.Selected = @set.Contains(item.Value);
+                    }
+                }
+                else
+                {
+                    var strValue = Convert.ToString(value);
+                    foreach (ListItem item in container.Items)
+                    {
+                        item.Selected = (item.Value == strValue);
+                    }
+                }
             }
 
             if (control is IModelProcessorBasic)
@@ -252,7 +265,7 @@ namespace ASP.NET.TwoWayModel.Common
                 return container.GetModel(type);
             }
 
-            var value = GetControlValue(control);
+            var value = GetControlValue(control, type);
             if (type.IsInstanceOfType(value))
             {
                 return value;
@@ -262,46 +275,46 @@ namespace ASP.NET.TwoWayModel.Common
             return converted;
         }
 
-        private Object GetConvertedValue(Object value, Type destType)
+        private Object GetConvertedValue(Object value, Type type)
         {
             if (ReferenceEquals(value, null))
             {
-                if (!destType.IsValueType)
+                if (!type.IsValueType)
                 {
                     return null;
                 }
 
-                if (IsNullable(destType))
+                if (IsNullable(type))
                 {
                     return null;
                 }
 
                 if (_allowDefaultIfNull)
                 {
-                    return Activator.CreateInstance(destType);
+                    return Activator.CreateInstance(type);
                 }
 
-                var nullValueErrorText = String.Format("Null is not assignable to type [{0}]", destType);
+                var nullValueErrorText = String.Format("Null is not assignable to type [{0}]", type);
                 throw new Exception(nullValueErrorText);
             }
 
-            var converter = TypeDescriptor.GetConverter(destType);
+            var converter = TypeDescriptor.GetConverter(type);
             if (converter.CanConvertFrom(value.GetType()))
             {
                 return converter.ConvertFrom(value);
             }
 
             converter = TypeDescriptor.GetConverter(value);
-            if (converter.CanConvertTo(destType))
+            if (converter.CanConvertTo(type))
             {
-                return converter.ConvertTo(value, destType);
+                return converter.ConvertTo(value, type);
             }
 
-            var unableConvertErrorText = String.Format("Unable to convert value [{0}] to type [{1}]", value, destType);
+            var unableConvertErrorText = String.Format("Unable to convert value [{0}] to type [{1}]", value, type);
             throw new Exception(unableConvertErrorText);
         }
 
-        private Object GetControlValue(Control control)
+        private Object GetControlValue(Control control, Type type)
         {
             if (control is RadioButton)
             {
@@ -321,30 +334,30 @@ namespace ASP.NET.TwoWayModel.Common
                 return container.Text;
             }
 
-            if (control is RadioButtonList)
+            if (control is ListControl)
             {
-                var container = (RadioButtonList)control;
+                var container = (ListControl)control;
+                var @set = new HashSet<String>();
 
-                var selItem = container.SelectedItem;
-                if (selItem == null)
+                foreach (ListItem item in container.Items)
                 {
+                    if (item.Selected)
+                    {
+                        @set.Add(item.Value);
+                    }
+                }
+
+                if (type == typeof(String))
+                {
+                    foreach (var item in set)
+                    {
+                        return item;
+                    }
+
                     return null;
                 }
 
-                return selItem.Value;
-            }
-
-            if (control is DropDownList)
-            {
-                var container = (DropDownList)control;
-
-                var selItem = container.SelectedItem;
-                if (selItem == null)
-                {
-                    return null;
-                }
-
-                return selItem.Value;
+                return @set;
             }
 
             throw new Exception();
