@@ -250,18 +250,18 @@ namespace ASP.NET.TwoWayModel.Common
                 }
             }
 
-            if (control is IModelProcessorBasic)
+            if (control is IModelProcessor)
             {
-                var container = (IModelProcessorBasic)control;
+                var container = (IModelProcessor)control;
                 container.SetModel(value, value.GetType());
             }
         }
 
         private Object DefaultControlValueGetter(Control control, Type type)
         {
-            if (control is IModelProcessorBasic)
+            if (control is IModelProcessor)
             {
-                var container = (IModelProcessorBasic)control;
+                var container = (IModelProcessor)control;
                 return container.GetModel(type);
             }
 

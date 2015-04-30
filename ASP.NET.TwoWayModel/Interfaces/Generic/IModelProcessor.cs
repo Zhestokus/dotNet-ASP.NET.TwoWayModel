@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Web.UI;
 
-namespace ASP.NET.TwoWayModel.Interfaces
+namespace ASP.NET.TwoWayModel.Interfaces.Generic
 {
-    public interface IModelProcessorGeneric : IModelProcessorBasic
+    public interface IModelProcessor : Interfaces.IModelProcessor
     {
         TModel GetModel<TModel>() where TModel : class, new();
         TModel GetModel<TModel>(Func<Control, Type, Object> valueGetter) where TModel : class;

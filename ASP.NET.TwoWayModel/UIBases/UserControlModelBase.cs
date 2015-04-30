@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Web.UI;
 using ASP.NET.TwoWayModel.Common;
-using ASP.NET.TwoWayModel.Interfaces;
+using ASP.NET.TwoWayModel.Interfaces.Generic;
 
 namespace ASP.NET.TwoWayModel.UIBases
 {
-    public class UserControlModelBase : UserControl, IModelProcessorBasic
+    public abstract class UserControlModelBase : UserControl, IModelProcessor
     {
         private UIModelProcessor _modelProcessor;
         public UIModelProcessor ModelProcessor
@@ -42,11 +42,13 @@ namespace ASP.NET.TwoWayModel.UIBases
         public virtual void SetModel(Object model, Type type)
         {
             ModelProcessor.SetModel(model, type);
+            OnSetModel(model, type);
         }
 
         public virtual void SetModel(Object model, Type type, Action<Control, Object> valueSetter)
         {
             ModelProcessor.SetModel(model, type, valueSetter);
+            OnSetModel(model, type);
         }
 
         #endregion
@@ -76,11 +78,21 @@ namespace ASP.NET.TwoWayModel.UIBases
         public virtual void SetModel<TModel>(TModel model) where TModel : class
         {
             ModelProcessor.SetModel(model);
+            OnSetModel(model, typeof(TModel));
         }
 
         public virtual void SetModel<TModel>(TModel model, Action<Control, Object> valueSetter) where TModel : class
         {
             ModelProcessor.SetModel(model, valueSetter);
+            OnSetModel(model, typeof(TModel));
+        }
+
+        #endregion
+
+        #region Overridables
+
+        protected virtual void OnSetModel(Object model, Type type)
+        {
         }
 
         #endregion

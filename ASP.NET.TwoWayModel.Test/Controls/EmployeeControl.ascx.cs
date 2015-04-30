@@ -1,15 +1,9 @@
 ﻿using System;
-using ASP.NET.TwoWayModel.UIBases;
+using ASP.NET.TwoWayModel.UIBases.Generic;
 using Models;
 
-public partial class Controls_EmployeeControl : UserControlModelBase
+public partial class Controls_EmployeeControl : UserControlModelBase<EmployeeModel>
 {
-    public EmployeeModel Model
-    {
-        get { return GetModel<EmployeeModel>(); }
-        set { SetModel(value); }
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
 

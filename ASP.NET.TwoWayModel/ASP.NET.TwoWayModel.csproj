@@ -42,9 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\UIModelProcessor.cs" />
-    <Compile Include="Interfaces\IModelProcessorBasic.cs" />
-    <Compile Include="Interfaces\IModelProcessorGeneric.cs" />
+    <Compile Include="Interfaces\IModelProcessor.cs" />
+    <Compile Include="Interfaces\Generic\IModelProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIBases\Generic\MasterPageModelBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIBases\Generic\PageModelBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIBases\UserControlModelBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -52,6 +58,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIBases\PageModelBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIBases\Generic\UserControlModelBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Utils\UserInterfaceUtil.cs" />

@@ -3,7 +3,7 @@ using System.Web.UI;
 
 namespace ASP.NET.TwoWayModel.Interfaces
 {
-    public interface IModelProcessorBasic
+    public interface IModelProcessor
     {
         Object GetModel(Type type);
         Object GetModel(Type type, Func<Control, Type, Object> valueGetter);
