@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\UIHierarchyCache.cs" />
     <Compile Include="Common\UIModelProcessor.cs" />
     <Compile Include="Interfaces\IModelProcessor.cs" />
     <Compile Include="Interfaces\Generic\IModelProcessor.cs" />

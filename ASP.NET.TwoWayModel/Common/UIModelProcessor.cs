@@ -165,7 +165,7 @@ namespace ASP.NET.TwoWayModel.Common
         private IDictionary<String, IList<Control>> GetPropertyControls(String attributeName)
         {
             var dictionary = new Dictionary<String, IList<Control>>();
-            var allControls = UserInterfaceUtil.EnumerateAllControls(_containerControl);
+            var allControls = UIHierarchyCache.GetChildren(_containerControl);
 
             foreach (var current in allControls)
             {
