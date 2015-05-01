@@ -207,25 +207,32 @@ namespace ASP.NET.TwoWayModel.Common
 
         private void DefaultControlValueSetter(Control control, Object value)
         {
-            if (control is RadioButton)
+            if (control is IUIValueContainer)
+            {
+                var container = (IUIValueContainer)control;
+                container.Value = value;
+            }
+            else if (control is IModelProcessor)
+            {
+                var container = (IModelProcessor)control;
+                container.SetModel(value, value.GetType());
+            }
+            else if (control is RadioButton)
             {
                 var container = (RadioButton)control;
                 container.Checked = (bool)value;
             }
-
-            if (control is CheckBox)
+            else if (control is CheckBox)
             {
                 var container = (CheckBox)control;
                 container.Checked = (bool)value;
             }
-
-            if (control is TextBox)
+            else if (control is TextBox)
             {
                 var container = (TextBox)control;
                 container.Text = Convert.ToString(value);
             }
-
-            if (control is ListControl)
+            else if (control is ListControl)
             {
                 var container = (ListControl)control;
 
@@ -248,12 +255,6 @@ namespace ASP.NET.TwoWayModel.Common
                         item.Selected = (item.Value == strValue);
                     }
                 }
-            }
-
-            if (control is IModelProcessor)
-            {
-                var container = (IModelProcessor)control;
-                container.SetModel(value, value.GetType());
             }
         }
 
@@ -316,6 +317,12 @@ namespace ASP.NET.TwoWayModel.Common
 
         private Object GetControlValue(Control control, Type type)
         {
+            if (control is IUIValueContainer)
+            {
+                var container = (IUIValueContainer)control;
+                return container.Value;
+            }
+
             if (control is RadioButton)
             {
                 var container = (RadioButton)control;

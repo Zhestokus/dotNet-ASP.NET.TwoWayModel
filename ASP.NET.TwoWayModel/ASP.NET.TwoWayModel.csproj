@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Common\UIHierarchyCache.cs" />
     <Compile Include="Common\UIModelProcessor.cs" />
+    <Compile Include="Interfaces\IUIValueContainer.cs" />
     <Compile Include="Interfaces\IModelProcessor.cs" />
     <Compile Include="Interfaces\Generic\IModelProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
