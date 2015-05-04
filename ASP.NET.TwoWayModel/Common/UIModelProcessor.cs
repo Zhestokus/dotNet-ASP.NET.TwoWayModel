@@ -132,9 +132,11 @@ namespace ASP.NET.TwoWayModel.Common
                 throw new Exception();
 
             var control = controls[0];
-            var propertyValue = propertyInfo.GetValue(modelObject, null);
 
-            ControlValueSetter(control, propertyValue);
+            var propertyValue = propertyInfo.GetValue(modelObject, null);
+            var propertyType = propertyInfo.PropertyType;
+
+            ControlValueSetter(control, propertyValue, propertyType);
         }
 
         private IDictionary<String, IList<Control>> GetPropertyControls(String attributeName)
@@ -180,7 +182,7 @@ namespace ASP.NET.TwoWayModel.Common
             return null;
         }
 
-        private void ControlValueSetter(Control control, Object value)
+        private void ControlValueSetter(Control control, Object value, Type type)
         {
             if (control is IUIValueContainer)
             {
@@ -190,17 +192,23 @@ namespace ASP.NET.TwoWayModel.Common
             else if (control is IModelProcessor)
             {
                 var container = (IModelProcessor)control;
-                container.SetModel(value, value.GetType());
+                value = (value ?? Activator.CreateInstance(type));
+
+                container.SetModel(value, type);
             }
             else if (control is RadioButton)
             {
                 var container = (RadioButton)control;
-                container.Checked = (bool)value;
+                var @bool = (bool?)value;
+
+                container.Checked = @bool.GetValueOrDefault();
             }
             else if (control is CheckBox)
             {
                 var container = (CheckBox)control;
-                container.Checked = (bool)value;
+                var @bool = (bool?)value;
+
+                container.Checked = @bool.GetValueOrDefault();
             }
             else if (control is TextBox)
             {
