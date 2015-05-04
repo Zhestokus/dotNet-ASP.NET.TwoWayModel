@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using ASP.NET.TwoWayModel.Interfaces;
-using ASP.NET.TwoWayModel.Utils;
 
 namespace ASP.NET.TwoWayModel.Common
 {
@@ -37,47 +36,27 @@ namespace ASP.NET.TwoWayModel.Common
         {
             return (TModel)GetModel(typeof(TModel));
         }
-        public TModel GetModel<TModel>(Func<Control, Type, Object> valueGetter) where TModel : class
-        {
-            return (TModel)GetModel(typeof(TModel), valueGetter);
-        }
 
         public void FillModel<TModel>(TModel model) where TModel : class
         {
-            FillModel(model, DefaultControlValueGetter);
-        }
-        public void FillModel<TModel>(TModel model, Func<Control, Type, Object> valueGetter) where TModel : class
-        {
-            FillModel(model, typeof(TModel), valueGetter);
+            FillModel(model, typeof(TModel));
         }
 
         public void SetModel<TModel>(TModel model) where TModel : class
         {
-            SetModel(model, DefaultControlValueSetter);
-        }
-        public void SetModel<TModel>(TModel model, Action<Control, Object> valueSetter) where TModel : class
-        {
-            SetModel(model, typeof(TModel), valueSetter);
+            SetModel(model, typeof(TModel));
         }
 
         public Object GetModel(Type type)
         {
-            return GetModel(type, DefaultControlValueGetter);
-        }
-        public Object GetModel(Type type, Func<Control, Type, Object> valueGetter)
-        {
             var newModel = Activator.CreateInstance(type);
-            FillModel(newModel, type, valueGetter);
+            FillModel(newModel, type);
 
             return newModel;
         }
 
         public void FillModel(Object model, Type type)
         {
-            FillModel(model, type, DefaultControlValueGetter);
-        }
-        public void FillModel(Object model, Type type, Func<Control, Type, Object> valueGetter)
-        {
             var modelProperties = type.GetProperties();
             foreach (var property in modelProperties)
             {
@@ -99,16 +78,12 @@ namespace ASP.NET.TwoWayModel.Common
                     }
                 }
 
-                SetModelPropertyValue(controls, property, valueGetter, model);
+                SetModelPropertyValue(controls, property, model);
             }
         }
 
         public void SetModel(Object model, Type type)
         {
-            SetModel(model, type, DefaultControlValueSetter);
-        }
-        public void SetModel(Object model, Type type, Action<Control, Object> valueSetter)
-        {
             var modelProperties = type.GetProperties();
             foreach (var property in modelProperties)
             {
@@ -130,11 +105,11 @@ namespace ASP.NET.TwoWayModel.Common
                     }
                 }
 
-                SetControlPropertyValue(controls, property, valueSetter, model);
+                SetControlPropertyValue(controls, property, model);
             }
         }
 
-        private void SetModelPropertyValue(IList<Control> controls, PropertyInfo propertyInfo, Func<Control, Type, Object> valueGetter, Object modelObject)
+        private void SetModelPropertyValue(IList<Control> controls, PropertyInfo propertyInfo, Object modelObject)
         {
             if (controls.Count == 0)
                 return;
@@ -144,11 +119,11 @@ namespace ASP.NET.TwoWayModel.Common
 
             var control = controls[0];
 
-            var propertyValue = valueGetter(control, propertyInfo.PropertyType);
+            var propertyValue = ControlValueGetter(control, propertyInfo.PropertyType);
             propertyInfo.SetValue(modelObject, propertyValue, null);
         }
 
-        private void SetControlPropertyValue(IList<Control> controls, PropertyInfo propertyInfo, Action<Control, Object> valueSetter, Object modelObject)
+        private void SetControlPropertyValue(IList<Control> controls, PropertyInfo propertyInfo, Object modelObject)
         {
             if (controls.Count == 0)
                 return;
@@ -159,7 +134,7 @@ namespace ASP.NET.TwoWayModel.Common
             var control = controls[0];
             var propertyValue = propertyInfo.GetValue(modelObject, null);
 
-            valueSetter(control, propertyValue);
+            ControlValueSetter(control, propertyValue);
         }
 
         private IDictionary<String, IList<Control>> GetPropertyControls(String attributeName)
@@ -205,7 +180,7 @@ namespace ASP.NET.TwoWayModel.Common
             return null;
         }
 
-        private void DefaultControlValueSetter(Control control, Object value)
+        private void ControlValueSetter(Control control, Object value)
         {
             if (control is IUIValueContainer)
             {
@@ -258,7 +233,7 @@ namespace ASP.NET.TwoWayModel.Common
             }
         }
 
-        private Object DefaultControlValueGetter(Control control, Type type)
+        private Object ControlValueGetter(Control control, Type type)
         {
             if (control is IModelProcessor)
             {
