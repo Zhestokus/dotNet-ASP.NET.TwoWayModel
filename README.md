@@ -27,7 +27,7 @@ LocationControl
 <asp:TextBox runat="server" ID="tbxSpeed" Property="LocationModel.Speed" />
 ```
 ```csharp
-public partial class VehicleControl : UserControlModelBase
+public partial class LocationControl : UserControlModelBase
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -58,7 +58,7 @@ VehicleControl
 </div>
 ```
 ```csharp
-public partial class LocationControl : UserControlModelBase
+public partial class VehicleControl : UserControlModelBase
 {
     protected void Page_Load(object sender, EventArgs e)
     {
