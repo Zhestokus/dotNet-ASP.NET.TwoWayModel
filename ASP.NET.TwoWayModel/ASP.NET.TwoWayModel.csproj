@@ -41,25 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\UIHierarchyCache.cs" />
-    <Compile Include="Common\UIModelProcessor.cs" />
-    <Compile Include="Interfaces\IUIValueContainer.cs" />
+    <Compile Include="Entities\BindPropertyEntity.cs" />
+    <Compile Include="Entities\ControlPropertyEntity.cs" />
+    <Compile Include="Entities\ClassPropertyEntity.cs" />
+    <Compile Include="Entities\ControlMappingEntity.cs" />
+    <Compile Include="Enums\BindMode.cs" />
     <Compile Include="Interfaces\IModelProcessor.cs" />
-    <Compile Include="Interfaces\Generic\IModelProcessor.cs" />
+    <Compile Include="Processing\UIModelProcessor.cs" />
+    <Compile Include="Processing\UIModelSettings.cs" />
+    <Compile Include="Processing\UIPropertyMapping.cs" />
+    <Compile Include="Processing\UIPropertyProcessor.cs" />
+    <Compile Include="Processing\UIPropertyWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UIBases\Generic\MasterPageModelBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIBases\Generic\PageModelBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="UIBases\UserControlModelBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIBases\MasterPageModelBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIBases\PageModelBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIBases\Generic\UserControlModelBase.cs">

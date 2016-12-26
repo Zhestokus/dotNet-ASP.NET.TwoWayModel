@@ -1,30 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.UI;
 
 namespace ASP.NET.TwoWayModel.Utils
 {
     public static class UserInterfaceUtil
     {
-        public static IEnumerable<Control> EnumerateAllControls(Control control)
+        public static IEnumerable<Control> EnumerateChildren(Control control)
+        {
+            return EnumerateChildren(control, null);
+        }
+
+        public static IEnumerable<Control> EnumerateChildren(Control control, Predicate<Control> skipPredicate)
         {
             var stack = new Stack<Control>();
-            stack.Push(control);
+
+            foreach (Control child in control.Controls)
+                stack.Push(child);
 
             while (stack.Count > 0)
             {
                 var current = stack.Pop();
-
                 if (current.Controls.Count > 0)
                 {
-                    foreach (Control child in current.Controls)
+                    if (skipPredicate == null || !skipPredicate(current))
                     {
-                        stack.Push(child);
+                        foreach (Control child in current.Controls)
+                            stack.Push(child);
                     }
                 }
 
                 yield return current;
             }
         }
-
     }
 }

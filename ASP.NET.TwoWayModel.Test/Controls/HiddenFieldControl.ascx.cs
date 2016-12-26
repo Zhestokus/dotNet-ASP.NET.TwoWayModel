@@ -7,7 +7,7 @@ using ASP.NET.TwoWayModel.Interfaces;
  * also that interface can be used for custom controls wich do some logic/calculation and returns single value (wich associated to Model Property) and does not need whole Model class
  */
 
-public partial class Controls_HiddenFieldControl : System.Web.UI.UserControl, IUIValueContainer
+public partial class Controls_HiddenFieldControl : System.Web.UI.UserControl
 {
     public Object Value
     {

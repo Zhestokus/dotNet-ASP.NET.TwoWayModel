@@ -3,17 +3,17 @@
     <tr>
         <td>ContractNumber</td>
         <td>
-            <asp:TextBox runat="server" ID="tbxContractNumber" Property="PositionModel.ContractNumber" /></td>
+            <asp:TextBox runat="server" ID="tbxContractNumber" Property="PositionModel.ContractNumber=Text}" /></td>
     </tr>
     <tr>
         <td>Salary</td>
         <td>
-            <asp:TextBox runat="server" ID="tbxSalary" Property="PositionModel.Salary" /></td>
+            <asp:TextBox runat="server" ID="tbxSalary" Property="PositionModel.Salary=Text}" /></td>
     </tr>
     <tr>
         <td>Currency</td>
         <td>
-            <asp:DropDownList runat="server" ID="ddlCurrency" Property="PositionModel.Currency">
+            <asp:DropDownList runat="server" ID="ddlCurrency" Property="{PositionModel.Currency=SelectedValue}">
                 <Items>
                     <asp:ListItem Text="USD" Value="USD" />
                     <asp:ListItem Text="AUD" Value="AUD" />
