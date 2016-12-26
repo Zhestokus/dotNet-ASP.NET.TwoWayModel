@@ -1,19 +1,32 @@
 # dotNet-ASP.NET.TwoWayModel
 dotNet-ASP.NET.TwoWayModel (Two way model binding)
 
-little library whitch give you model binding features (like in MVC)
+little library whitch give you model binding features (like in MVC/MVVM)
 you need just to add Property attribute with model class property name
 
 e.g
 ```asp
-<asp:TextBox runat="server" ID="tbxEmail" Property="ASP.NET.TwoWayModel.Test.WebApp.Models.SubscriberModel.Email" />
-OR
-<asp:TextBox runat="server" ID="tbxEmail" Property="SubscriberModel.Email" />
-OR
-<asp:TextBox runat="server" ID="tbxEmail" Property="Email" />
+<asp:TextBox runat="server" ID="tbxEmail" Property="{SubscriberModel.Email=Text}" />
+```
+If you need map more then one property
+```asp
+<asp:FileUpload runat="server" ID="fuDocument" Property="{DocumentModel.FileName=FileName}{DocumentModel.FileBytes=FileBytes}" />
 ```
 
-and then you can use GetModel method
+BUT FileUpload control can be used only for upload, you can't assige file data to FileUpload control, so it need to specify direction of assignement 
+
+```asp
+<asp:FileUpload runat="server" ID="fuDocument" Property="{DocumentModel.FileName=FileName, Mode=Receive}{DocumentModel.FileBytes=FileBytes, Mode=Receive}" />
+
+<asp:GridView runat="server" ID="gvDocuments" Property="{DocumentsModel.List=DataSource, Mode=Assigne}">
+</asp:GridView>
+```
+possible values of assignement mode is 
+1. TwoWay (is Default),
+2. Assigne (only assigne value of property of Model to property of Control), 
+3. Receive (only assigne value of property of Control to property of Model)
+
+and then you can use Model property
 
 e.g
 
@@ -21,13 +34,13 @@ Your own controls
 
 LocationControl
 ```asp
-<asp:TextBox runat="server" ID="tbxLatitude" Property="LocationModel.Latitude" />
-<asp:TextBox runat="server" ID="tbxLongitude" Property="LocationModel.Longitude" />
-<asp:TextBox runat="server" ID="tbxAltitude" Property="LocationModel.Altitude" />
-<asp:TextBox runat="server" ID="tbxSpeed" Property="LocationModel.Speed" />
+<asp:TextBox runat="server" ID="tbxLatitude" Property="{LocationModel.Latitude=Text}" />
+<asp:TextBox runat="server" ID="tbxLongitude" Property="{LocationModel.Longitude=Text}" />
+<asp:TextBox runat="server" ID="tbxAltitude" Property="{LocationModel.Altitude=Text}" />
+<asp:TextBox runat="server" ID="tbxSpeed" Property="{LocationModel.Speed=Text}" />
 ```
 ```csharp
-public partial class LocationControl : UserControlModelBase
+public partial class LocationControl : UserControlModelBase<LocationModel>
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -39,7 +52,7 @@ VehicleControl
 <%@ Register Src="~/LocationControl.ascx" TagPrefix="local" TagName="LocationControl" %>
 
 <div>
-  <asp:DropDownList runat="server" ID="ddlMake" Property="VehicleModel.Make">
+  <asp:DropDownList runat="server" ID="ddlMake" Property="{VehicleModel.Make=SelectedValue}">
     <Items>
       <asp:ListItem Text="Ford" Value="Ford" />
       <asp:ListItem Text="Toyota" Value="Toyota" />
@@ -47,18 +60,18 @@ VehicleControl
       <asp:ListItem Text="Other" Value="Other" />
     </Items>
   </asp:DropDownList>
-  <asp:TextBox runat="server" ID="tbxModel" Property="VehicleModel.Model" />
-  <asp:TextBox runat="server" ID="tbxYear" Property="VehicleModel.Year" />
-  <asp:TextBox runat="server" ID="tbxMonth" Property="VehicleModel.Month" />
-  <asp:TextBox runat="server" ID="tbxVIN" Property="VehicleModel.VIN" />
-  <asp:TextBox runat="server" ID="tbxEngine" Property="VehicleModel.Engine" />
+  <asp:TextBox runat="server" ID="tbxModel" Property="{VehicleModel.Model=Text}" />
+  <asp:TextBox runat="server" ID="tbxYear" Property="{VehicleModel.Year=Text}" />
+  <asp:TextBox runat="server" ID="tbxMonth" Property="{VehicleModel.Month=Text}" />
+  <asp:TextBox runat="server" ID="tbxVIN" Property="{VehicleModel.VIN=Text}" />
+  <asp:TextBox runat="server" ID="tbxEngine" Property="{VehicleModel.Engine=Text}" />
 </div>
 <div>
-  <local:LocationControl runat="server" ID="locationControl" Property="VehicleModel.Location"/>
+  <local:LocationControl runat="server" ID="locationControl" Property="{VehicleModel.Location=Model}"/>
 </div>
 ```
 ```csharp
-public partial class VehicleControl : UserControlModelBase
+public partial class VehicleControl : UserControlModelBase<VehicleModel>
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -103,15 +116,15 @@ public partial class _Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        var vehicleModel = vehicleControl.GetModel<VehicleModel>();
+        var vehicleModel = vehicleControl.Model;
         
-        //change subscriberModel instance data
+        //change Model instance data
         
-        vehicleControl.SetModel<VehicleModel>(vehicleModel);
+        vehicleControlModel = vehicleModel;
     }
 }
 ```
 
-NOTE: controls or pages which represents Model should be inherited from UserControlModelBase class and/or PageModelBase class respectively
+NOTE: controls which represents Model should be inherited from UserControlModelBase class
 
 for more information see ASP.NET.TwoWayMode.Test application
