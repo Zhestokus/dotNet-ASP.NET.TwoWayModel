@@ -2,7 +2,10 @@
 dotNet-ASP.NET.TwoWayModel (Two way model binding)
 
 little library whitch give you model binding features (like in MVC/MVVM)
-you need just to add Property attribute with model class property name
+you need just to add Property attribute with model class property name.
+you can map any property of Control to any property of Model,
+format of mapping is {[Name class].[Name of property]=[Name of property of Control]}
+
 
 e.g
 ```asp
@@ -25,8 +28,6 @@ possible values of assignement mode is
 1. TwoWay (is Default),
 2. Assigne (only assigne value of property of Model to property of Control), 
 3. Receive (only assigne value of property of Control to property of Model)
-
-and then you can use Model property
 
 e.g
 
