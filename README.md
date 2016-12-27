@@ -1,6 +1,9 @@
 # dotNet-ASP.NET.TwoWayModel
 dotNet-ASP.NET.TwoWayModel (Two way model binding)
 
+ASP.NET WebForms MVVM/MVC without JavaScript frameworks
+
+
 little library whitch give you model binding features (like in MVC/MVVM)
 you need just to add Property attribute with model class property name.
 you can map any property of Control to any property of Model,
