@@ -10,6 +10,8 @@ namespace ASP.NET.TwoWayModel.Processing
 {
     public static class UIPropertyWorker
     {
+        private static readonly StringComparer _defComparer = StringComparer.OrdinalIgnoreCase;
+
         public static void FillModelProperty(ControlMappingEntity entity, Object model)
         {
             FillModelProperty(entity, model, entity.TargetControl);
@@ -24,6 +26,10 @@ namespace ASP.NET.TwoWayModel.Processing
         private static void FillModelPropertyMeta(ControlPropertyEntity entity, Object model, Control control)
         {
             var modelType = model.GetType();
+
+            if (!_defComparer.Equals(entity.ClassName, modelType.Name))
+                return;
+
             var controlType = control.GetType();
 
             var modelProperty = modelType.GetProperty(entity.ClassProperty);
@@ -46,13 +52,17 @@ namespace ASP.NET.TwoWayModel.Processing
             }
 
             var objectValue = controlProperty.GetValue(control);
-            var convertedValue = ConvertValue(objectValue, destinationType);
+            var convertedValue = ConvertValue(objectValue, destinationType, UIModelSettings.DefaultIfNull);
 
             dictionary[entity.ClassPropertyParams] = convertedValue;
         }
         private static void FillModelPropertySimple(ControlPropertyEntity entity, Object model, Control control)
         {
             var modelType = model.GetType();
+
+            if (!_defComparer.Equals(entity.ClassName, modelType.Name))
+                return;
+
             var controlType = control.GetType();
 
             var modelProperty = modelType.GetProperty(entity.ClassProperty);
@@ -61,7 +71,7 @@ namespace ASP.NET.TwoWayModel.Processing
             ThrowPropertyNotFound(entity, modelType, modelProperty, controlType, controlProperty);
 
             var objectValue = controlProperty.GetValue(control);
-            var convertedValue = ConvertValue(objectValue, modelProperty.PropertyType);
+            var convertedValue = ConvertValue(objectValue, modelProperty.PropertyType, UIModelSettings.DefaultIfNull);
 
             modelProperty.SetValue(model, convertedValue);
         }
@@ -80,6 +90,10 @@ namespace ASP.NET.TwoWayModel.Processing
         private static void FillControlPropertyMeta(ControlPropertyEntity entity, Object model, Control control)
         {
             var modelType = model.GetType();
+
+            if (!_defComparer.Equals(entity.ClassName, modelType.Name))
+                return;
+
             var controlType = control.GetType();
 
             var modelProperty = modelType.GetProperty(entity.ClassProperty);
@@ -96,13 +110,17 @@ namespace ASP.NET.TwoWayModel.Processing
             if (dictionary.Contains(entity.ClassPropertyParams))
                 objectValue = dictionary[entity.ClassPropertyParams];
 
-            var convertedValue = ConvertValue(objectValue, controlProperty.PropertyType);
+            var convertedValue = ConvertValue(objectValue, controlProperty.PropertyType, true);
 
             controlProperty.SetValue(control, convertedValue);
         }
         private static void FillControlPropertySimple(ControlPropertyEntity entity, Object model, Control control)
         {
             var modelType = model.GetType();
+
+            if (!_defComparer.Equals(entity.ClassName, modelType.Name))
+                return;
+
             var controlType = control.GetType();
 
             var modelProperty = modelType.GetProperty(entity.ClassProperty);
@@ -111,7 +129,7 @@ namespace ASP.NET.TwoWayModel.Processing
             ThrowPropertyNotFound(entity, modelType, modelProperty, controlType, controlProperty);
 
             var objectValue = modelProperty.GetValue(model);
-            var convertedValue = ConvertValue(objectValue, controlProperty.PropertyType);
+            var convertedValue = ConvertValue(objectValue, controlProperty.PropertyType, true);
 
             controlProperty.SetValue(control, convertedValue);
         }
@@ -136,7 +154,7 @@ namespace ASP.NET.TwoWayModel.Processing
             return !String.IsNullOrWhiteSpace(entity.ClassPropertyParams);
         }
 
-        private static Object ConvertValue(Object value, Type type)
+        private static Object ConvertValue(Object value, Type type, bool defaultIfNull)
         {
             if (type.IsInstanceOfType(value))
                 return value;
@@ -147,7 +165,7 @@ namespace ASP.NET.TwoWayModel.Processing
                 if (!type.IsValueType || IsNullable(type))
                     return null;
 
-                if (UIModelSettings.DefaultIfNull)
+                if (defaultIfNull)
                     return Activator.CreateInstance(type);
 
                 var nullValueErrorText = String.Format("Null is not assignable to type [{0}]", type);
@@ -179,5 +197,4 @@ namespace ASP.NET.TwoWayModel.Processing
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
-
 }

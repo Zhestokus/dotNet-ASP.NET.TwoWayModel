@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.UI;
 using ASP.NET.TwoWayModel.Enums;
 
@@ -48,5 +44,4 @@ namespace ASP.NET.TwoWayModel.Processing
             }
         }
     }
-
 }

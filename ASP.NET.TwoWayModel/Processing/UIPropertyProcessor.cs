@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using ASP.NET.TwoWayModel.Entities;
 using ASP.NET.TwoWayModel.Enums;
 using ASP.NET.TwoWayModel.Interfaces;
-using ASP.NET.TwoWayModel.Utils;
 
 namespace ASP.NET.TwoWayModel.Processing
 {
     public static class UIPropertyProcessor
     {
+        private static readonly StringComparer _defComparer = StringComparer.OrdinalIgnoreCase;
+
         public static IEnumerable<ControlMappingEntity> GetMapping(Control container)
         {
-            var controls = UserInterfaceUtil.EnumerateChildren(container, IsModelContainer);
+            var controls = EnumerateChildren(container);
             foreach (var control in controls)
             {
                 foreach (var entity in GetProperties(control))
@@ -47,7 +46,7 @@ namespace ASP.NET.TwoWayModel.Processing
 
                 foreach (var pair in dict)
                 {
-                    if (!StringComparer.OrdinalIgnoreCase.Equals(pair.Key, UIModelSettings.ModeProperty))
+                    if (!_defComparer.Equals(pair.Key, UIModelSettings.ModeProperty))
                     {
                         var source = ParseProperty(pair.Key);
 
@@ -69,9 +68,8 @@ namespace ASP.NET.TwoWayModel.Processing
             var value = String.Empty;
 
             var sb = new StringBuilder();
-            var comparer = StringComparer.OrdinalIgnoreCase;
 
-            var dict = new Dictionary<String, String>(comparer);
+            var dict = new Dictionary<String, String>(_defComparer);
 
             for (int i = 0; i < exp.Length; i++)
             {
@@ -102,11 +100,12 @@ namespace ASP.NET.TwoWayModel.Processing
                             if (brackets == 0)
                             {
                                 value = sb.ToString();
+
                                 sb.Clear();
 
                                 dict.Add(name, value);
 
-                                var result = new Dictionary<String, String>(dict, comparer);
+                                var result = new Dictionary<String, String>(dict, _defComparer);
                                 yield return result;
 
                                 dict.Clear();
@@ -119,6 +118,7 @@ namespace ASP.NET.TwoWayModel.Processing
                             if (brackets == 0)
                             {
                                 name = sb.ToString();
+
                                 sb.Clear();
                                 continue;
                             }
@@ -129,6 +129,7 @@ namespace ASP.NET.TwoWayModel.Processing
                             if (brackets == 0)
                             {
                                 value = sb.ToString();
+
                                 sb.Clear();
 
                                 dict.Add(name, value);
@@ -150,6 +151,7 @@ namespace ASP.NET.TwoWayModel.Processing
             if (sb.Length > 0)
             {
                 value = sb.ToString();
+
                 sb.Clear();
 
                 dict.Add(name, value);
@@ -157,7 +159,7 @@ namespace ASP.NET.TwoWayModel.Processing
 
             if (dict.Count > 0)
             {
-                var lastOne = new Dictionary<String, String>(dict, comparer);
+                var lastOne = new Dictionary<String, String>(dict, _defComparer);
                 yield return lastOne;
             }
         }
@@ -287,6 +289,29 @@ namespace ASP.NET.TwoWayModel.Processing
             return null;
         }
 
+        public static IEnumerable<Control> EnumerateChildren(Control control)
+        {
+            var stack = new Stack<Control>();
+
+            foreach (Control child in control.Controls)
+                stack.Push(child);
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                if (current.Controls.Count > 0)
+                {
+                    if (!IsModelContainer(current))
+                    {
+                        foreach (Control child in current.Controls)
+                            stack.Push(child);
+                    }
+                }
+
+                yield return current;
+            }
+        }
+
         private static bool IsModelContainer(Control control)
         {
             if (control is IModelProcessor)
@@ -302,5 +327,4 @@ namespace ASP.NET.TwoWayModel.Processing
             return false;
         }
     }
-
 }

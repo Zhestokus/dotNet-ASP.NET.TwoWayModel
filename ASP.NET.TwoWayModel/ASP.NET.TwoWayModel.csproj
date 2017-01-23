@@ -49,7 +49,6 @@
     <Compile Include="Interfaces\IModelProcessor.cs" />
     <Compile Include="Processing\UIModelProcessor.cs" />
     <Compile Include="Processing\UIModelSettings.cs" />
-    <Compile Include="Processing\UIPropertyMapping.cs" />
     <Compile Include="Processing\UIPropertyProcessor.cs" />
     <Compile Include="Processing\UIPropertyWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,7 +58,6 @@
     <Compile Include="UIBases\Generic\UserControlModelBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Utils\UserInterfaceUtil.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
